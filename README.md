@@ -11,7 +11,7 @@
 
 # Descripción
 
-Este proyecto corresponde a la actividad de introducción al framework **Express.js** utilizando **Node.js**. Se realizó la configuración inicial del entorno de desarrollo, la instalación de las dependencias necesarias, la inicialización del repositorio Git y la creación de un servidor web básico.
+Este proyecto corresponde a    la actividad de introducción al framework **Express.js** utilizando **Node.js**. Se realizó la configuración inicial del entorno de desarrollo, la instalación de las dependencias necesarias, la inicialización del repositorio Git y la creación de un servidor web básico.
 
 ---
 
