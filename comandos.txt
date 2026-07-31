@@ -7,5 +7,6 @@ npm install
 
 GIT
 Crear rama:  git branch nombre_rama
-crear rama y psarase a ella akjnslkajasoidasudjab
+crear rama y psarase a ella
+
 
