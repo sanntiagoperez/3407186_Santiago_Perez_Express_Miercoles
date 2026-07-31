@@ -51,7 +51,42 @@ app.get("/ruta4", (req, res) => {
         <h3>Numero: ${numero}</h3>
     `)
 })
-// Taller: Hacerlo 
+// Taller: Hacer LOS 3 PRIMEROS 
+
+//Punto 1
+app.get("/ruta1t/:saludo/:nombre", (req, res) =>
+{
+    const saludo = req.params.saludo;
+    const nombre = req.params.nombre;
+    res.json({
+        saludo,
+        nombre
+    })
+})
+
+// Punto 2
+app.get("/ruta2t/:productos/:nombre", (req, res) => {
+    const productos = req.params.productos;
+    const nombre = req.params.nombre;
+
+    res.json({
+        productos,
+        nombre
+    });
+});
+
+//Punto 3
+app.get("/ruta3t", (req, res) => {
+    const productos = req.query.productos || "Frijoles";
+    const categoria = req.query.categoria || "Granos";
+    const id = req.query.id || 66;
+
+    res.json({
+        productos,
+        categoria,
+        id
+    });
+});
 
 // Iniciar servidor
 app.listen(port, () => {
