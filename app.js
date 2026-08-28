@@ -1,94 +1,67 @@
-import express from "express";
-import { configDotenv } from "dotenv";
-
-configDotenv();
-
+const express = require('express');
 const app = express();
+require('dotenv').config();
+const port = process.env.PUERTO || 3000; 
 
-const port = process.env.PUERTO || 3030;
+//middleware para parsear datos de el body//
+app.use(express.json());
 
-// Ruta principal
-app.get("/", (req, res) => {
-    res.send("Aprendiz ficha 3407186 SENA");
+app.use(express.urlencoded({ extended: true }));
+
+app.get("/", (_, res) => { 
+    res.send('Aprendices ficha 3407186'); 
 });
 
-// Ruta 1
-app.get("/ruta1", (req, res) => {
-    res.send("<h1>Usando res.send</h1>");
-});
-
-// Ruta 2
-app.get("/ruta2", (req, res) => {
-    res.json({
-        dev: "node --watch app.js",
-        script: "node app.js"
-    });
-});
-
-// Ruta 3
-app.get("/ruta3/:nombre/:apellido/:apellido2/:edad", (req, res) => {
-    const nombreUsuario = req.params.nombre;
-    const apellido = req.params.apellido;
-    const apellido2 = req.params.apellido2;
-    const edad = req.params.edad;
-
-    res.json({
-        usuario: nombreUsuario,
-        apellido: apellido,
-        apellido2: apellido2,
-        edad: edad
-    });
-});
-
-app.get("/ruta4", (req, res) => {
-    //templates rutas dinamicas
-    const numero = req.query.phone || 3228870585
-    const orden = req.query.orden || "Sin orden"
-    const pagina = req.query.pagina || 66
-    res.send(`<h1>Listados de aprendices</h1>
-        <h2>El listado orden: ${orden}</h2>
-        <p>Pagina: ${pagina}</p>
-        <h3>Numero: ${numero}</h3>
-    `)
-})
-// Taller: Hacer LOS 3 PRIMEROS 
-
-//Punto 1
-app.get("/ruta1t/:saludo/:nombre", (req, res) =>
-{
-    const saludo = req.params.saludo;
-    const nombre = req.params.nombre;
-    res.json({
-        saludo,
-        nombre
+app.get("/api/aprendices", (req, res) => {
+    res.status(200).json({
+        "mensaje": "Lista de aprendices :)" 
     })
 })
 
-// Punto 2
-app.get("/ruta2t/:productos/:nombre", (req, res) => {
-    const productos = req.params.productos;
-    const nombre = req.params.nombre;
+app.get("/api/aprendices", (req, res) => {
+    res.status(200).json({
+        "mensaje": "Lista de aprendices :)" 
+    })
+})
 
-    res.json({
-        productos,
-        nombre
+//endpoint crear aprendices//
+app.post("/api/aprendices", (req, res) => {
+    res.status(200).json({
+        "mensaje": "Crear aprendices"
+    })
+})
+
+// Ruta para EDITAR un aprendiz (usando PUT y un ID dinámico)
+app.put("/api/aprendices", (req, res) => {
+    res.status(200).json({
+        "mensaje": "Editar aprendiz con ID: "
     });
 });
 
-//Punto 3
-app.get("/ruta3t", (req, res) => {
-    const productos = req.query.productos || "Frijoles";
-    const categoria = req.query.categoria || "Granos";
-    const id = req.query.id || 66;
+app.delete("/api/aprendices", (req, res) => {
+    res.status(200).json({
+        "mensaje": "Borrar aprendiz : "
+    })
+})
 
-    res.json({
-        productos,
-        categoria,
-        id
-    });
-});
+app.post("/rutaJson", (req, res)=>{
+    const todosDatos = req.body
+    const edad =req.body.edad
+ if (edad >= 18) {
+    res.json({ mensaje: "Es mayor de edad" });
+} else {
+    res.json({ mensaje: "Es menor de edad" });
+}
+    res.json({datosJson: todosDatos})
+})
 
-// Iniciar servidor
-app.listen(port, () => {
-    console.log(`SERVIDOR: http://localhost:${port}`);
+app.post("/rutaFormulario", (req, res)=>{
+    const todosDatos =req.body
+    const programa =req.body.programa
+    res.json({TodosDatos: todosDatos, Miprograma: programa})
+})
+
+
+app.listen(port, () => { 
+    console.log(`Servidor corriendo en http://localhost:${port}`); 
 });
