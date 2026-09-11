@@ -5,7 +5,9 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 // Configuración del puerto
-const port = process.env.PORT || 3030;
+// (antes decía process.env.PORT, pero en el .env la variable se llama PUERTO,
+// por eso el servidor siempre usaba el valor por defecto)
+const port = process.env.PUERTO || 3030;
 
 // Importación de Middlewares
 const registroMiddleware = require("./middleware/registromiddleware");
@@ -33,6 +35,14 @@ const rutaArchivo = ruta.join(__dirname, 'datos.json');
 
 // Configuración de Multer
 const multer = require('multer');
+
+// La carpeta de imágenes no existía en el proyecto, por lo que Multer
+// fallaba (ENOENT) al intentar subir cualquier archivo. La creamos si
+// no existe antes de configurar el almacenamiento.
+const carpetaImagenes = ruta.join(__dirname, 'misImagenes');
+if (!sistemaArchivo.existsSync(carpetaImagenes)) {
+    sistemaArchivo.mkdirSync(carpetaImagenes, { recursive: true });
+}
 
 const almacenamiento = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -91,13 +101,35 @@ app.get("/api/aprendices", (req, res, next) => {
 // LISTAR UN APRENDIZ POR ID
 // ==========================================
 
-app.get("/api/aprendices/:id", (req, res) => {
+app.get("/api/aprendices/:id", (req, res, next) => {
 
-    const id = req.params.id;
+    const id = Number(req.params.id);
 
-    res.status(200).json({
-        mensaje: "Lista de un aprendiz",
-        id: id
+    sistemaArchivo.readFile(rutaArchivo, "utf-8", (error, datos) => {
+
+        if (error) {
+            return next(error);
+        }
+
+        try {
+
+            const listaAprendices = datos ? JSON.parse(datos) : [];
+            const aprendiz = listaAprendices.find((a) => a.id === id);
+
+            if (!aprendiz) {
+                return res.status(404).json({
+                    mensaje: `No se encontró un aprendiz con id ${id}`
+                });
+            }
+
+            res.status(200).json({
+                mensaje: aprendiz
+            });
+
+        } catch (error) {
+            next(error);
+        }
+
     });
 
 });
@@ -131,6 +163,17 @@ app.post("/api/aprendices", cargar.single("imagen"), (req, res, next) => {
 
             }
 
+            // Generamos un id autoincremental (antes los registros
+            // se guardaban sin id, lo que hacía imposible buscarlos,
+            // actualizarlos o borrarlos por id).
+            const idsExistentes = listaAprendices
+                .map((a) => a.id)
+                .filter((id) => typeof id === "number");
+
+            nuevoAprendiz.id = idsExistentes.length
+                ? Math.max(...idsExistentes) + 1
+                : 1;
+
             listaAprendices.push(nuevoAprendiz);
 
             sistemaArchivo.writeFile(
@@ -159,14 +202,54 @@ app.post("/api/aprendices", cargar.single("imagen"), (req, res, next) => {
 // ACTUALIZAR UN APRENDIZ
 // ==========================================
 
-app.put("/api/aprendices/:id", (req, res) => {
+app.put("/api/aprendices/:id", (req, res, next) => {
 
-    const id = req.params.id;
+    const id = Number(req.params.id);
 
-    res.status(200).json({
-        mensaje: "Actualizar aprendiz",
-        id: id,
-        datos: req.body
+    sistemaArchivo.readFile(rutaArchivo, "utf-8", (error, datos) => {
+
+        if (error) {
+            return next(error);
+        }
+
+        try {
+
+            const listaAprendices = datos ? JSON.parse(datos) : [];
+            const indice = listaAprendices.findIndex((a) => a.id === id);
+
+            if (indice === -1) {
+                return res.status(404).json({
+                    mensaje: `No se encontró un aprendiz con id ${id}`
+                });
+            }
+
+            listaAprendices[indice] = {
+                ...listaAprendices[indice],
+                ...req.body,
+                id
+            };
+
+            sistemaArchivo.writeFile(
+                rutaArchivo,
+                JSON.stringify(listaAprendices, null, 2),
+                (error) => {
+
+                    if (error) {
+                        return next(error);
+                    }
+
+                    res.status(200).json({
+                        mensaje: "Aprendiz actualizado",
+                        datosAprendiz: listaAprendices[indice]
+                    });
+
+                }
+            );
+
+        } catch (error) {
+            next(error);
+        }
+
     });
 
 });
@@ -185,13 +268,51 @@ app.get("/error", (req, res, next) => {
 // ELIMINAR UN APRENDIZ
 // ==========================================
 
-app.delete("/api/aprendices/:id", (req, res) => {
+app.delete("/api/aprendices/:id", (req, res, next) => {
 
-    const id = req.params.id;
+    const id = Number(req.params.id);
 
-    res.status(200).json({
-        mensaje: "Eliminar aprendiz",
-        id: id
+    sistemaArchivo.readFile(rutaArchivo, "utf-8", (error, datos) => {
+
+        if (error) {
+            return next(error);
+        }
+
+        try {
+
+            const listaAprendices = datos ? JSON.parse(datos) : [];
+            const existe = listaAprendices.some((a) => a.id === id);
+
+            if (!existe) {
+                return res.status(404).json({
+                    mensaje: `No se encontró un aprendiz con id ${id}`
+                });
+            }
+
+            const listaActualizada = listaAprendices.filter(
+                (a) => a.id !== id
+            );
+
+            sistemaArchivo.writeFile(
+                rutaArchivo,
+                JSON.stringify(listaActualizada, null, 2),
+                (error) => {
+
+                    if (error) {
+                        return next(error);
+                    }
+
+                    res.status(200).json({
+                        mensaje: `Aprendiz con id ${id} eliminado`
+                    });
+
+                }
+            );
+
+        } catch (error) {
+            next(error);
+        }
+
     });
 
 });
