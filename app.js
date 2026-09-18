@@ -10,9 +10,9 @@ const jwt = require('jsonwebtoken');
 const port = process.env.PUERTO || 3030;
 
 // Importación de Middlewares
-const registroMiddleware = require("./middleware/registromiddleware");
-const manejoErrores = require("./middleware/manejadorErrores");
-const autenticacion = require("./middleware/autenticacion");
+const registroMiddleware = require("./src/middleware/registromiddleware");
+const manejoErrores = require("./src/middleware/manejadorErrores");
+const autenticacion = require("./src/middleware/autenticacion");
 
 // Middlewares para recibir JSON y formularios
 app.use(express.json());
