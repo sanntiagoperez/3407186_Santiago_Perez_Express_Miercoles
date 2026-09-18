@@ -1,7 +1,7 @@
 import express from 'express';
 const app = express();
 
-// CORRECCIÓN DEFINITIVA: Apuntar a la carpeta 'routers' y al archivo 'index.js'
+// importar el enrutador de la carpeta 'routers'
 import enrutador from './routers/index.js';
 
 // usar el middleware
@@ -17,3 +17,4 @@ app.get('/', (req, res) => {
 });
 
 export default app;
+

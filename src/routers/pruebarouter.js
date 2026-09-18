@@ -1,14 +1,10 @@
-// ruta de solo prueba
 import { Router } from 'express';
-const enrutador = Router(); 
-const mostrarRuta = ("../controllers/pruebaController.js");
+const enrutador = Router();
 
-//funcion (req, res) debe ir en el controlador
-enrutador.get('/rutaPersonal', (req, res) => {
-    res.json({
-        mensaje: "Ruta de prueba personal y ruta prueba"
-    });
-});
+// Importar el controlador subiendo un nivel (..) hasta la carpeta controllers
+import mostrarRuta from '../controllers/pruebacontrollers.js';
 
-// exportar el enrutador para poder usarlo en app.js
+// Usar la función del controlador en la ruta
+enrutador.get('/rutaPersonal', mostrarRuta);
+
 export default enrutador;
