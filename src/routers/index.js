@@ -1,14 +1,11 @@
-// agrupar las rutas de mi aplicacion
-import { Router } from 'express';
-const router = Router();
+//agrupa las rutas de mi aplicacion (usuarios,productos, notas, citas)
 
-// Importar los enrutadores existentes respetando sus ubicaciones reales
-import pruebaRouter from './pruebarouter.js';
-import usuariosRouter from '../controllers/usuariosrouter.js'; // 🛠️ CORREGIDO: sube un nivel y entra a controllers
+const {Router}= require ("express")
+const enrutador = Router() 
+const pruebarouter =require("./pruebarouter")
+const usuariosrouter =require("./usuariosrouter")
 
-// Usamos los enrutadores
-router.use("/rutaPrueba", pruebaRouter);
-router.use("/usuarios", usuariosRouter);
+enrutador.use("/rutaPrueba", pruebarouter)
+enrutador.use("/usuario", usuariosrouter)
 
-// Exportar usando la nueva sintaxis
-export default router;
+module.exports = enrutador

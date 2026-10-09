@@ -1,10 +1,8 @@
-import { Router } from 'express';
+const { Router } = require('express');
+const mostrarRuta = require('../controllers/rutaPruebaController.js');
+
 const enrutador = Router();
 
-// Importar el controlador subiendo un nivel (..) hasta la carpeta controllers
-import mostrarRuta from '../controllers/pruebacontrollers.js';
+enrutador.get('/listado', mostrarRuta);
 
-// Usar la función del controlador en la ruta
-enrutador.get('/rutaPersonal', mostrarRuta);
-
-export default enrutador;
+module.exports = enrutador;

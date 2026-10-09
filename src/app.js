@@ -1,20 +1,22 @@
-import express from 'express';
-const app = express();
+require("dotenv").config()
+const express = require("express")
+//importar enrutador
+const enrutador = require("./routers")
 
-// importar el enrutador de la carpeta 'routers'
-import enrutador from './routers/index.js';
+const app = express()
 
-// usar el middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+//usar middleware, formatear el body
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
 
-// importar el archivo enrutador (todas las rutas) de routers
-app.use('/api', enrutador);
 
-// endpoint raiz
-app.get('/', (req, res) => {
-    res.send('Api estructurado por capas');
-});
+//importar el archivo enrutador(toda las rutas) de routers
+app.use("/api", enrutador)
 
-export default app;
+//endpoint raiz, de Bienvenida
+app.get("/",(req, res)=>{
+    res.send("API, REST Estructurado en capas")
+})
 
+
+module.exports = app
