@@ -143,3 +143,5 @@ Puerto .tern
 
 # Fin de https://www.toptal.com/developers/gitignore/api/node
 /src/generated/prisma
+
+/src/generated/prisma

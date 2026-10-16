@@ -1,8 +1,8 @@
-const listarUsuarios = ()=>{
-    const usuarios=[
-        {"nombre":"jhonny","cargo":"instructor"},
-        {"nombre":"Angelica","cargo":"aprendiz"}
-    ]
-    return usuarios
-}
-module.exports =listarUsuarios
+const ormPrisma = require("../config/conexion");
+
+const listarUsuarios = async () => {
+    const usuarios = await ormPrisma.usuarios.findMany(); // 'M' mayúscula
+    return usuarios;
+};
+
+module.exports = { listarUsuarios };

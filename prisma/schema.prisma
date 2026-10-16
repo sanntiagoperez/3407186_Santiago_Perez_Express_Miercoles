@@ -4,17 +4,16 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider               = "prisma-client"
+  output                 = "../src/generated/prisma"
+  moduleFormat           = "cjs"
+  generatedFileExtension = "ts"
+  importFileExtension    = "ts"
 }
 
 datasource db {
   provider = "postgresql"
 }
-
-
-// use prisma-8
-
 model Usuarios {
   id    Int     @id @default(autoincrement())
   email String  @unique
@@ -22,3 +21,13 @@ model Usuarios {
   clave String
 }
 
+model Products {
+  id    Int     @id @default(autoincrement())
+  nombre String
+  Stock  String?
+  Categoria String
+}
+model Estado {
+  id    Int     @id @default(autoincrement())
+  nombre String
+}
